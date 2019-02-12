@@ -1,4 +1,4 @@
-from table import Table
+from app.table import Table
 
 ao3_search = Table(
     rootxp  = "//ol[@class = 'work index group']/li",

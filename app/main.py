@@ -7,8 +7,8 @@ import lxml.etree
 import flask
 from werkzeug.contrib.atom import AtomFeed
 
-from table import Table
-from config import config
+from app.table import Table
+from app.config import config
 
 def extract_items(
     src, rootxp, titlexp, urlxp, datexp, datefmt,
@@ -27,8 +27,8 @@ def extract_items(
     items = []
     for element in tree:
         item = Table()
-        item.title   = element.xpath(titlexp)[0].text
-        item.url     = urljoin(
+        item.title = element.xpath(titlexp)[0].text
+        item.url   = urljoin(
             src, element.xpath(urlxp)[0],
         ) # absolute url
         item.updated = datetime.strptime(
