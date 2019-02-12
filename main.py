@@ -1,17 +1,26 @@
 import requests
 from datetime import datetime
+from urllib.parse import urljoin
 
 import lxml.html
+import lxml.etree
 import flask
 from werkzeug.contrib.atom import AtomFeed
 
-class Table(dict):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.__dict__ = self
+from table import Table
+from config import config
 
-def extract_items(src, rootxp, titlexp, urlxp, datexp, datefmt, **kwargs):
-    html = requests.get(src).content
+def extract_items(
+    src, rootxp, titlexp, urlxp, datexp, datefmt,
+    descxp = None,
+    **kwargs,
+):
+    request = requests.get(
+        url     = src,
+        headers = { "user-agent": "Mozilla/5.0" },
+    )
+    src  = request.url # resolved url
+    html = request.content
     tree = lxml.html.fromstring(html) \
                     .xpath(rootxp)
 
@@ -19,11 +28,17 @@ def extract_items(src, rootxp, titlexp, urlxp, datexp, datefmt, **kwargs):
     for element in tree:
         item = Table()
         item.title   = element.xpath(titlexp)[0].text
-        item.url     = element.xpath(urlxp)[0]
+        item.url     = urljoin(
+            src, element.xpath(urlxp)[0],
+        ) # absolute url
         item.updated = datetime.strptime(
             element.xpath(datexp)[0].text,
             datefmt
         )
+        if descxp:
+            item.summary = element.xpath(descxp)[0].text
+        elif descxp is not None:
+            item.summary = lxml.etree.tostring(element)
         items.append(item)
     items.sort(
         key     = lambda i: i.updated,
@@ -33,24 +48,16 @@ def extract_items(src, rootxp, titlexp, urlxp, datexp, datefmt, **kwargs):
 
 app = flask.Flask(__name__)
 
-@app.route('/')
-def feed():
-    config = Table(
-        title   = "Deluge",
-        src     = "https://archiveofourown.org/works/3584145/navigate",
-        rootxp  = "//ol[@class = 'chapter index group']/li",
-        titlexp = "a",
-        urlxp   = "a/@href",
-        datexp  = "span",
-        datefmt = "(%Y-%m-%d)",
-    )
+@app.route('/feed/<string:id>')
+def feed(id):
+    choice = config[id]
 
-    items = extract_items(**config)
+    items = extract_items(**choice)
 
     feed = AtomFeed(
-        title = config.title,
-        url   = config.src,
-        id    = config.src,
+        title = choice.title,
+        url   = choice.src,
+        id    = choice.src,
     )
     for i in items: feed.add(**i)
     return feed.get_response()
