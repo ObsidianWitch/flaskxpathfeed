@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>xpathfeed</title>
+</head>
+<body>
+    <ul>
+    {% for k, v in config.items() %}
+        <li><a href="/feed/{{ k }}">{{ v.title }}</a></li>
+    {% endfor %}
+    </ul>
+</body>
+</html>

@@ -48,6 +48,12 @@ def extract_items(
 
 app = flask.Flask(__name__)
 
+@app.route('/')
+def index():
+    return flask.render_template("index.html",
+        config = config,
+    )
+
 @app.route('/feed/<string:id>')
 def feed(id):
     choice = config[id]
