@@ -38,7 +38,7 @@ def extract_items(
         if descxp:
             item.summary = element.xpath(descxp)[0].text
         elif descxp is not None:
-            item.summary = lxml.etree.tostring(element)
+            item.summary = lxml.etree.tostring(element, encoding = "unicode")
         items.append(item)
     items.sort(
         key     = lambda i: i.updated,
