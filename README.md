@@ -22,4 +22,7 @@ $ git commit -am "config - AO3 We Know the Devil"
 $ heroku login
 $ heroku create
 $ git push heroku self:master
+
+# Open the app in your browser
+$ heroku open
 ```
