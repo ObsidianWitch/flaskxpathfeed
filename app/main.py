@@ -17,7 +17,7 @@ def xpathout(element, xpath):
     else:
         return result
 
-def extract_items(
+def extract(
     src, rootxp, titlexp, urlxp, datexp, datefmt,
     descxp = None,
     **kwargs,
@@ -29,6 +29,10 @@ def extract_items(
     src  = request.url # resolved url
     html = request.content
     tree = lxml.html.fromstring(html)
+
+    title = " ".join(
+        xpathout(tree, "//title/text()").split()
+    )
 
     items = []
     for element in tree.xpath(rootxp):
@@ -46,7 +50,7 @@ def extract_items(
         key     = lambda i: i.updated,
         reverse = True,
     )
-    return items
+    return title, items
 
 flaskapp = flask.Flask(__name__)
 
@@ -61,15 +65,13 @@ def feed():
     choice = app.config.bridges[
         flask.request.args["bridge"]
     ]
-    choice.title = flask.request.args["title"]
     choice.src = flask.request.args["src"]
-
-    items = extract_items(**choice)
+    choice.title, choice.items = extract(**choice)
 
     feed = AtomFeed(
         title = choice.title,
         url   = choice.src,
         id    = choice.src,
     )
-    for i in items: feed.add(**i)
+    for i in choice.items: feed.add(**i)
     return feed.get_response()
