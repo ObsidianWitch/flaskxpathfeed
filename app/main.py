@@ -8,7 +8,7 @@ import flask
 from werkzeug.contrib.atom import AtomFeed
 
 from app.table import Table
-from app.config import config
+import app.config
 
 def extract_items(
     src, rootxp, titlexp, urlxp, datexp, datefmt,
@@ -46,17 +46,21 @@ def extract_items(
     )
     return items
 
-app = flask.Flask(__name__)
+flaskapp = flask.Flask(__name__)
 
-@app.route('/')
+@flaskapp.route('/')
 def index():
     return flask.render_template("index.html",
-        config = config,
+        bridges = app.config.bridges,
     )
 
-@app.route('/feed/<string:id>')
-def feed(id):
-    choice = config[id]
+@flaskapp.route('/feed')
+def feed():
+    choice = app.config.bridges[
+        flask.request.args["bridge"]
+    ]
+    choice.title = flask.request.args["title"]
+    choice.src = flask.request.args["src"]
 
     items = extract_items(**choice)
 
