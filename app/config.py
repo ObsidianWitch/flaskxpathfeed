@@ -1,5 +1,3 @@
-import lxml.etree
-
 from app.table import Table
 
 bridges = Table(
