@@ -10,6 +10,13 @@ from werkzeug.contrib.atom import AtomFeed
 from app.table import Table
 import app.config
 
+def xpathout(element, xpath):
+    result = element.xpath(xpath)[0]
+    if isinstance(result, lxml.html.HtmlElement):
+        return lxml.etree.tostring(result, encoding = "unicode")
+    else:
+        return result
+
 def extract_items(
     src, rootxp, titlexp, urlxp, datexp, datefmt,
     descxp = None,
@@ -21,24 +28,19 @@ def extract_items(
     )
     src  = request.url # resolved url
     html = request.content
-    tree = lxml.html.fromstring(html) \
-                    .xpath(rootxp)
+    tree = lxml.html.fromstring(html)
 
     items = []
-    for element in tree:
+    for element in tree.xpath(rootxp):
         item = Table()
-        item.title = element.xpath(titlexp)[0].text
-        item.url   = urljoin(
-            src, element.xpath(urlxp)[0],
+        item.title = xpathout(element, titlexp)
+        item.url = urljoin(
+            src, xpathout(element, urlxp)
         ) # absolute url
         item.updated = datetime.strptime(
-            element.xpath(datexp)[0].text,
-            datefmt
+            xpathout(element, datexp), datefmt,
         )
-        if descxp:
-            item.summary = element.xpath(descxp)[0].text
-        elif descxp is not None:
-            item.summary = lxml.etree.tostring(element, encoding = "unicode")
+        if descxp: item.summary = xpathout(element, descxp)
         items.append(item)
     items.sort(
         key     = lambda i: i.updated,
