@@ -22,7 +22,14 @@ $ git commit -am "config - Bandcamp bridge"
 $ heroku login
 $ heroku create
 $ git push heroku self:master
+```
 
-# Open the app in your browser
-$ heroku open
+## Examples
+
+```shell
+# Get feed for "AO3 - Warcraft F/F"
+https://example.com/feed?src=https://frama.link/fe3NWkxB
+
+# Set a custom keyword bookmark in Firefox (e.g. !bridge)
+https://example.com/feed?src=%s
 ```

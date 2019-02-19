@@ -17,11 +17,7 @@ def xpathout(element, xpath):
     else:
         return result
 
-def extract(
-    src, rootxp, titlexp, urlxp, datexp, datefmt,
-    descxp = None,
-    **kwargs,
-):
+def extract(src):
     request = requests.get(
         url     = src,
         headers = { "user-agent": "Mozilla/5.0" },
@@ -30,48 +26,45 @@ def extract(
     html = request.content
     tree = lxml.html.fromstring(html)
 
+    bridge = next(
+        bridge for _, bridge in app.config.bridges.items()
+        if bridge.match(src)
+    )
+
     title = " ".join(
         xpathout(tree, "//title/text()").split()
     )
 
     items = []
-    for element in tree.xpath(rootxp):
+    for element in tree.xpath(bridge.rootxp):
         item = Table()
-        item.title = xpathout(element, titlexp)
+        item.title = xpathout(element, bridge.titlexp)
         item.url = urljoin(
-            src, xpathout(element, urlxp)
+            src, xpathout(element, bridge.urlxp)
         ) # absolute url
         item.updated = datetime.strptime(
-            xpathout(element, datexp), datefmt,
+            xpathout(element, bridge.datexp), bridge.datefmt,
         )
-        if descxp: item.summary = xpathout(element, descxp)
+        if hasattr(bridge, "descxp"):
+            item.summary = xpathout(element, bridge.descxp)
         items.append(item)
     items.sort(
         key     = lambda i: i.updated,
         reverse = True,
     )
+
     return title, items
 
 flaskapp = flask.Flask(__name__)
 
-@flaskapp.route('/')
-def index():
-    return flask.render_template("index.html",
-        bridges = app.config.bridges,
-    )
-
 @flaskapp.route('/feed')
 def feed():
-    choice = app.config.bridges[
-        flask.request.args["bridge"]
-    ]
-    choice.src = flask.request.args["src"]
-    choice.title, choice.items = extract(**choice)
-
+    src = flask.request.args["src"]
+    title, items = extract(src)
     feed = AtomFeed(
-        title = choice.title,
-        url   = choice.src,
-        id    = choice.src,
+        title = title,
+        url   = src,
+        id    = src,
     )
-    for i in choice.items: feed.add(**i)
+    for i in items: feed.add(**i)
     return feed.get_response()
