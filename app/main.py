@@ -46,6 +46,8 @@ def extract(src):
             xpathout(element, bridge.datexp), bridge.datefmt,
         )
         item.id = f"{item.url}/{item.updated.isoformat()}"
+        if hasattr(bridge, "extraidxp"):
+            item.id += f"/{xpathout(element, bridge.extraidxp)}"
         if hasattr(bridge, "descxp"):
             item.summary = xpathout(element, bridge.descxp)
         items.append(item)
