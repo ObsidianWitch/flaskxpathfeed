@@ -51,10 +51,6 @@ def extract(src):
         if hasattr(bridge, "descxp"):
             item.summary = xpathout(element, bridge.descxp)
         items.append(item)
-    items.sort(
-        key     = lambda i: i.updated,
-        reverse = True,
-    )
 
     return title, items
 
