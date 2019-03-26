@@ -1,11 +1,10 @@
 import re
 
-from app.table import Table
+from app.types import Table, Bridge
 
 bridges = Table(
-    ao3_search = Table(
+    ao3_search = Bridge(
         match     = lambda url: "archiveofourown.org/works?" in url,
-        reverse   = False,
         rootxp    = "//ol[@class = 'work index group']/li",
         extraidxp = "dl/dd[@class = 'chapters']/text()",
         titlexp   = "div/h4/a/text()",
@@ -14,7 +13,7 @@ bridges = Table(
         datexp    = "div/p[@class = 'datetime']/text()",
         datefmt   = "%d %b %Y",
     ),
-    ao3_work = Table(
+    ao3_work = Bridge(
         match   = lambda url: re.search(
             pattern = re.escape("archiveofourown.org/works/")
                 + "[0-9]+"

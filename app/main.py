@@ -7,7 +7,7 @@ import lxml.etree
 import flask
 from werkzeug.contrib.atom import AtomFeed
 
-from app.table import Table
+from app.types import Table
 import app.config
 
 def xpathout(element, xpath):
@@ -46,9 +46,9 @@ def extract(src):
             xpathout(element, bridge.datexp), bridge.datefmt,
         )
         item.id = f"{item.url}/{item.updated.isoformat()}"
-        if hasattr(bridge, "extraidxp"):
+        if bridge.extraidxp:
             item.id += f"/{xpathout(element, bridge.extraidxp)}"
-        if hasattr(bridge, "descxp"):
+        if bridge.descxp:
             item.summary = xpathout(element, bridge.descxp)
         items.append(item)
 
