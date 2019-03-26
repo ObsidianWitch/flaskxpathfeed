@@ -5,6 +5,7 @@ from app.table import Table
 bridges = Table(
     ao3_search = Table(
         match     = lambda url: "archiveofourown.org/works?" in url,
+        reverse   = False,
         rootxp    = "//ol[@class = 'work index group']/li",
         extraidxp = "dl/dd[@class = 'chapters']/text()",
         titlexp   = "div/h4/a/text()",
@@ -20,6 +21,7 @@ bridges = Table(
                 + re.escape("/navigate"),
             string = url,
         ),
+        reverse = True,
         rootxp  = "//ol[@class = 'chapter index group']/li",
         titlexp = "a/text()",
         urlxp   = "a/@href",

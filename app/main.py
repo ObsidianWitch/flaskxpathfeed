@@ -52,6 +52,8 @@ def extract(src):
             item.summary = xpathout(element, bridge.descxp)
         items.append(item)
 
+    if bridge.reverse: items = items[::-1]
+
     return title, items
 
 flaskapp = flask.Flask(__name__)
