@@ -8,12 +8,12 @@ class Table(dict):
 
 @dataclass
 class Bridge:
-    match     : typing.Callable
-    rootxp    : str
-    titlexp   : str
-    urlxp     : str
-    datexp    : str
-    datefmt   : str
-    extraidxp : str = None
-    descxp    : str = None
-    reverse   : bool = False
+    match   : typing.Callable
+    rootxp  : str
+    titlexp : str
+    urlxp   : str
+    datexp  : str
+    datefmt : str
+    idxp    : str = None
+    descxp  : str = None
+    reverse : bool = False

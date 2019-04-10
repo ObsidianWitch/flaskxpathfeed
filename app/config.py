@@ -4,14 +4,14 @@ from app.types import Table, Bridge
 
 bridges = Table(
     ao3_search = Bridge(
-        match     = lambda url: "archiveofourown.org/works?" in url,
-        rootxp    = "//ol[@class = 'work index group']/li",
-        extraidxp = "dl/dd[@class = 'chapters']/text()",
-        titlexp   = "div/h4/a/text()",
-        urlxp     = "div/h4/a/@href",
-        descxp    = ".",
-        datexp    = "div/p[@class = 'datetime']/text()",
-        datefmt   = "%d %b %Y",
+        match   = lambda url: "archiveofourown.org/works?" in url,
+        rootxp  = "//ol[@class = 'work index group']/li",
+        idxp    = "dl/dd[@class = 'chapters']/text()",
+        titlexp = "div/h4/a/text()",
+        urlxp   = "div/h4/a/@href",
+        descxp  = ".",
+        datexp  = "div/p[@class = 'datetime']/text()",
+        datefmt = "%d %b %Y",
     ),
     ao3_work = Bridge(
         match   = lambda url: re.search(
