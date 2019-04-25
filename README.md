@@ -27,8 +27,14 @@ $ git push heroku self:master
 ## Examples
 
 ```shell
-# Get feed for "AO3 - Warcraft F/F"
+# Get feed for "AO3 - Warcraft F/F (+ other filters)"
 https://example.com/feed?src=https://frama.link/fe3NWkxB
+
+# Get feed for "AO3 - Nyaaru's bookmarks"
+https://example.com/feed?src=https://frama.link/Gc4Czmj1
+
+# Get feed for "AO3 - A Better Past by LysSerris"
+https://example.com/feed?src=https://frama.link/tfh9yFNz
 
 # Set a custom keyword bookmark in Firefox (e.g. !bridge)
 https://example.com/feed?src=%s
