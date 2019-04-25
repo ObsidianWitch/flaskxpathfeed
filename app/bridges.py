@@ -1,8 +1,22 @@
 import re
+import typing
+from dataclasses import dataclass
 
-from app.types import Table, Bridge
+from app.types import Table
 
-bridges = Table(
+@dataclass
+class Bridge:
+    match   : typing.Callable
+    rootxp  : str
+    titlexp : str
+    urlxp   : str
+    datexp  : str
+    datefmt : str
+    idxp    : str = None
+    descxp  : str = None
+    reverse : bool = False
+
+table = Table(
     ao3_search = Bridge(
         match   = lambda url: "archiveofourown.org/works?" in url,
         rootxp  = "//ol[@class = 'work index group']/li",

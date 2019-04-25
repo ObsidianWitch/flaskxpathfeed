@@ -8,7 +8,7 @@ import flask
 from werkzeug.contrib.atom import AtomFeed
 
 from app.types import Table
-import app.config
+import app.bridges
 
 def xpathout(element, xpath):
     result = element.xpath(xpath)[0]
@@ -27,7 +27,7 @@ def extract(src):
     tree = lxml.html.fromstring(html)
 
     bridge = next(
-        bridge for _, bridge in app.config.bridges.items()
+        bridge for _, bridge in app.bridges.table.items()
         if bridge.match(src)
     )
 
