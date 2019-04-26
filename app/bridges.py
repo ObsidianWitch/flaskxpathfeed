@@ -36,7 +36,7 @@ table = Table(
             "archiveofourown.org/works" in url
             or "https://archiveofourown.org/bookmarks" in url
         ),
-        rootxp  = "//ol[contains(@class, 'index group')]/li",
+        rootxp  = "//ol[contains(@class, 'index group')]/li[div/h4/a]",
         idxp    = "dl/dd[@class = 'chapters']/text()",
         titlexp = "div/h4/a/text()",
         urlxp   = "div/h4/a/@href",
