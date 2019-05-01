@@ -10,8 +10,13 @@ from werkzeug.contrib.atom import AtomFeed
 from app.types import Table
 import app.bridges
 
-def xpathout(element, xpath):
-    result = element.xpath(xpath)[0]
+def xpathout(element, xpath, default = None):
+    result = element.xpath(xpath)
+    if (not result) and (default is not None):
+        result = default
+    else:
+        result = result[0]
+
     if isinstance(result, lxml.html.HtmlElement):
         return lxml.etree.tostring(result, encoding = "unicode")
     else:
@@ -47,7 +52,7 @@ def extract(src):
         )
         item.id = f"{item.url}/{item.updated.isoformat()}"
         if bridge.idxp:
-            item.id += f"/{xpathout(element, bridge.idxp)}"
+            item.id += f"/{xpathout(element, bridge.idxp, '')}"
         if bridge.descxp:
             item.summary = xpathout(element, bridge.descxp)
         items.append(item)
