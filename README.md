@@ -3,11 +3,27 @@
 Flask-XPathFeed is a [Flask](http://flask.pocoo.org/) web application to
 generate Atom feeds from XPath expressions.
 
+## Development
+
+```shell
+# Clone this repository
+$ git clone https://gitlab.com/Obsidienne/flask-xpathfeed.git
+$ cd flask-xpathfeed
+
+# Set up virtual environment
+$ python -m venv env
+$ source env/bin/activate
+$ pip install -r requirements.txt
+$ ./debug.sh
+$ deactivate
+```
+
 ## Deploy to Heroku
 
 ```shell
 # Clone this repository
 $ git clone https://gitlab.com/Obsidienne/flask-xpathfeed.git
+$ cd flask-xpathfeed
 
 # Create a branch
 $ git checkout -b self

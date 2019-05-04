@@ -52,7 +52,7 @@ def extract(src):
         )
         item.id = f"{item.url}/{item.updated.isoformat()}"
         if bridge.idxp:
-            item.id += f"/{xpathout(element, bridge.idxp, '')}"
+            item.id += f"/{xpathout(element, bridge.idxp, default = '')}"
         if bridge.descxp:
             item.summary = xpathout(element, bridge.descxp)
         items.append(item)
