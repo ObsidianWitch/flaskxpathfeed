@@ -10,6 +10,9 @@ from werkzeug.contrib.atom import AtomFeed
 from app.types import Table
 import app.bridges
 
+# Apply `xpath` to `element` and retrieve one result. The result is converted
+# to a string if needed. Returns `default` if it is set and no result were
+# retrieved.
 def xpathout(element, xpath, default = None):
     result = element.xpath(xpath)
     if (not result) and (default is not None):
@@ -22,6 +25,16 @@ def xpathout(element, xpath, default = None):
     else:
         return result
 
+# Convert all urls from the HTML `tree` to absolute ones by combining them with
+# `baseurl`.
+def urlabs(tree, baseurl):
+    for element in tree.xpath('//*[@src]'):
+        url = urljoin(baseurl, element.get('src'))
+        element.set('src', url)
+    for element in tree.xpath('//*[@href]'):
+        url = urljoin(baseurl, element.get('href'))
+        element.set('href', url)
+
 def extract(src):
     request = requests.get(
         url     = src,
@@ -30,25 +43,23 @@ def extract(src):
     src  = request.url # resolved url
     html = request.content
     tree = lxml.html.fromstring(html)
+    urlabs(tree, src)
 
     bridge = next(
         bridge for _, bridge in app.bridges.table.items()
         if bridge.match(src)
     )
 
-    title = " ".join(
-        xpathout(tree, "//title/text()").split()
-    )
+    title = " ".join( xpathout(tree, "//title/text()").split() )
 
     items = []
     for element in tree.xpath(bridge.rootxp):
         item = Table()
         item.title = xpathout(element, bridge.titlexp)
-        item.url = urljoin(
-            src, xpathout(element, bridge.urlxp)
-        ) # absolute url
+        item.url = xpathout(element, bridge.urlxp)
         item.updated = datetime.strptime(
-            xpathout(element, bridge.datexp), bridge.datefmt,
+            xpathout(element, bridge.datexp),
+            bridge.datefmt,
         )
         item.id = f"{item.url}/{item.updated.isoformat()}"
         if bridge.idxp:
