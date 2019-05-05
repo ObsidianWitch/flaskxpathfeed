@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+</head>
+<body>
+    <h1><a href="{{ url }}">{{ title }}</a></h1>
+    {% for i in items %}
+        <h2><a href="{{ i.url }}">{{ i.title }}</a></h2>
+        <div>id: {{ i.id }}</div>
+        <div>updated: {{ i.updated }}</div>
+        {{ i.summary | safe }}
+        <hr>
+    {% endfor %}
+</body>
+</html>

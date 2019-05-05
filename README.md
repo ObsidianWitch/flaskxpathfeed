@@ -44,6 +44,9 @@ $ heroku logout
 ## Examples
 
 ```shell
+# Preview feed
+https://example.com/preview?src=https://frama.link/fe3NWkxB
+
 # Get feed for "AO3 - Warcraft F/F (+ other filters)"
 https://example.com/feed?src=https://frama.link/fe3NWkxB
 

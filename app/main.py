@@ -26,15 +26,17 @@ def xpathout(element, xpath, default = None):
         return result
 
 # Convert all urls from the HTML `tree` to absolute ones by combining them with
-# `baseurl`.
-def urlabs(tree, baseurl):
+# `base`.
+def urlabs(tree, base):
     for element in tree.xpath('//*[@src]'):
-        url = urljoin(baseurl, element.get('src'))
+        url = urljoin(base, element.get('src'))
         element.set('src', url)
     for element in tree.xpath('//*[@href]'):
-        url = urljoin(baseurl, element.get('href'))
+        url = urljoin(base, element.get('href'))
         element.set('href', url)
 
+# Extract elements needed to create a feed from the `src` web page. Elements are
+# extracted using XPath expressions defined in bridges.
 def extract(src):
     request = requests.get(
         url     = src,
@@ -85,3 +87,13 @@ def feed():
     )
     for i in items: feed.add(**i)
     return feed.get_response()
+
+@flaskapp.route('/preview')
+def preview():
+    src = flask.request.args["src"]
+    title, items = extract(src)
+    return flask.render_template("preview.html",
+        title = title,
+        url   = src,
+        items = items,
+    )
