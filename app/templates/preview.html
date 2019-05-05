@@ -4,7 +4,10 @@
     <title>{{ title }}</title>
 </head>
 <body>
-    <h1><a href="{{ url }}">{{ title }}</a></h1>
+    <h1>
+        <a href="{{ url }}">{{ title }}</a>
+        | <a href="/feed?src={{ url }}">feed</a>
+    </h1>
     {% for i in items %}
         <h2><a href="{{ i.url }}">{{ i.title }}</a></h2>
         <div>id: {{ i.id }}</div>
