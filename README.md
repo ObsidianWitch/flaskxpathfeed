@@ -7,7 +7,7 @@ generate Atom feeds from XPath expressions.
 
 ```shell
 # Clone this repository
-$ git clone https://gitlab.com/Obsidienne/flask-xpathfeed.git
+$ git clone https://github.com/obsiwitch/flaskxpathfeed.git
 $ cd flask-xpathfeed
 
 # Set up virtual environment
@@ -22,7 +22,7 @@ $ deactivate
 
 ```shell
 # Clone this repository
-$ git clone https://gitlab.com/Obsidienne/flask-xpathfeed.git
+$ git clone https://github.com/obsiwitch/flaskxpathfeed.git
 $ cd flask-xpathfeed
 
 # Create a branch
